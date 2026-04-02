@@ -25,12 +25,7 @@ app.use(morgan(isProduction ? "combined" : "dev"));
 
 app.use(
   cors({
-    origin: [
-      process.env.CLIENT_URL?.replace(/\/$/, ""),
-      "https://resume-analyzer-nine-eosin.vercel.app",
-      "http://localhost:5173",
-      "http://localhost:5174",
-    ],
+    origin: "https://resume-analyzer-nine-eosin.vercel.app",
     credentials: true,
   }),
 );
