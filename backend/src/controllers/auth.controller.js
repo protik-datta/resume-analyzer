@@ -26,13 +26,10 @@ const registerUser = async (req, res) => {
     });
 
     const token = generateToken(user);
-
-    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "none"
     });
 
     const safeUser = {
@@ -68,13 +65,10 @@ const loginUser = async (req, res) => {
     }
 
     const token = generateToken(user);
-
-    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "none"
     });
 
     const safeUser = {
