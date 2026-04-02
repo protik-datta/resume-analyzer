@@ -42,9 +42,13 @@ const Analysis = () => {
     mutate(data, {
       onSuccess: (res) => {
         toast.success("Analysis complete! Redirecting... 🚀");
-        console.log("Analysis Result:", res.data);
+        const analysisId = res.data?.data?._id;
         setTimeout(() => {
-          navigate("/history");
+          if (analysisId) {
+            navigate(`/analysis/${analysisId}`);
+          } else {
+            navigate("/history");
+          }
         }, 2000);
       },
       onError: (err) => {

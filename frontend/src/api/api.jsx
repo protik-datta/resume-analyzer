@@ -56,7 +56,8 @@ export const useGetHistory = () => {
   return useQuery({
     queryKey: ["history"],
     queryFn: async () => {
-      return api.get("/resume/history");
+      const res = await api.get("/resume/history");
+      return res.data
     },
   });
 };
@@ -65,7 +66,8 @@ export const useGetAnalysisDetails = (id) => {
   return useQuery({
     queryKey: ["analysis", id],
     queryFn: async () => {
-      return api.get(`/resume/analysis/${id}`);
+      const res = await api.get(`/resume/analysis/${id}`);
+      return res.data;
     },
     enabled: !!id,
   });
