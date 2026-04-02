@@ -3,13 +3,14 @@ import logo from "../../assets/logo.svg";
 import userIcon from "../../assets/user_icon.svg";
 import { useAuth } from "../../context/AuthContext";
 import Button from "./Button";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Container from "./Container";
 
 const Navbar = ({ scrolled }) => {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const navItems = ["Home", "Features", "Testimonials"];
 
@@ -37,20 +38,30 @@ const Navbar = ({ scrolled }) => {
 
       {/* Desktop Nav Links */}
       <ul className="hidden md:flex items-center gap-8">
-        {navItems.map((item, index) => (
+        {navItems.map((item, index) => {
+          const isScrollItem = item === "Features" || item === "Testimonials";
+          const target = item === "Home" ? "/" : isScrollItem ? `/#${item.toLowerCase()}` : `/${item.toLowerCase()}`;
+          return (
           <li key={index}>
             <NavLink
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+              to={target}
+              onClick={(e) => {
+                if (isScrollItem && location.pathname === "/") {
+                  e.preventDefault();
+                  document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
               className={({ isActive }) =>
                 `text-[14px] font-medium transition-colors ${
-                  isActive ? "text-black" : "text-[#374151] hover:text-black"
+                  (isActive && !isScrollItem) ? "text-black" : "text-[#374151] hover:text-black"
                 }`
               }
             >
               {item}
             </NavLink>
           </li>
-        ))}
+          );
+        })}
       </ul>
 
       {/* Auth Section & Mobile Toggle */}
@@ -89,20 +100,30 @@ const Navbar = ({ scrolled }) => {
         }`}
       >
         <div className="flex flex-col items-center gap-8 mt-16">
-          {navItems.map((item, index) => (
+          {navItems.map((item, index) => {
+            const isScrollItem = item === "Features" || item === "Testimonials";
+            const target = item === "Home" ? "/" : isScrollItem ? `/#${item.toLowerCase()}` : `/${item.toLowerCase()}`;
+            return (
             <NavLink
               key={index}
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-              onClick={() => setIsOpen(false)}
+              to={target}
+              onClick={(e) => {
+                if (isScrollItem && location.pathname === "/") {
+                  e.preventDefault();
+                  document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+                }
+                setIsOpen(false);
+              }}
               className={({ isActive }) =>
                 `text-xl font-medium transition-colors ${
-                  isActive ? "text-black" : "text-[#374151] hover:text-black"
+                  (isActive && !isScrollItem) ? "text-black" : "text-[#374151] hover:text-black"
                 }`
               }
             >
               {item}
             </NavLink>
-          ))}
+            );
+          })}
 
           {user ? (
             <Link 

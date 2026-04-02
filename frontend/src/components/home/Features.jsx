@@ -72,7 +72,7 @@ function Features() {
   ];
 
   return (
-    <section className="py-20 bg-gray-100">
+    <section id="features" className="py-20 bg-gray-100">
       <Container>
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-14">

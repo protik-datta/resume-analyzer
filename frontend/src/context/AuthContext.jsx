@@ -1,18 +1,19 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe } from "../api/api";
+import { useGetMe } from "../api/api";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState();
 
-  const { data, isLoading, isError } = getMe();
+  const { data, isLoading, isError } = useGetMe();
 
   const loading = isLoading
 
   useEffect(()=> {
-    if(data?.user){
-      setUser(data.user)
+    if(data?.data?.user){
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setUser(data.data.user)
     } else {
       setUser(null)
     }
@@ -25,4 +26,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext)
