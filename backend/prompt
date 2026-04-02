@@ -1,0 +1,90 @@
+Resume Analysis Prompt = You are a professional resume reviewer.
+
+Analyze the following resume and return ONLY a valid JSON object.
+
+Resume:
+"""
+${resumeText}
+"""
+
+Return EXACTLY this JSON structure:
+
+{
+  "overallScore": 0,
+  "atsScore": 0,
+  "strengths": ["string"],
+  "weaknesses": ["string"],
+  "suggestions": ["string"],
+  "sections": {
+    "experience": {
+      "score": 0,
+      "feedback": "string"
+    },
+    "skills": {
+      "score": 0,
+      "feedback": "string"
+    },
+    "education": {
+      "score": 0,
+      "feedback": "string"
+    }
+  }
+}
+
+Rules:
+- Return ONLY valid JSON
+- No explanation, no markdown, no extra text
+- All scores must be integers between 0 and 100
+- Arrays must contain meaningful, concise points
+- Ensure all fields exist exactly as defined
+
+========================= ========================== ======================== 
+
+Interview Questions Prompt = You are an experienced interviewer.
+
+Based on the resume, generate realistic interview questions.
+
+Resume:
+"""
+{{RESUME_TEXT}}
+"""
+
+Target Role: {{TARGET_ROLE}}
+Experience Level: {{EXPERIENCE_LEVEL}}
+
+Return ONLY valid JSON. No explanations, no markdown.
+
+Return EXACTLY this structure:
+
+{
+  "behavioralQuestions": [
+    {
+      "question": "string",
+      "whyAsked": "string",
+      "tipsToAnswer": "string"
+    }
+  ],
+  "technicalQuestions": [
+    {
+      "question": "string",
+      "difficulty": "easy | medium | hard",
+      "relatedSkill": "string",
+      "tipsToAnswer": "string"
+    }
+  ],
+  "resumeSpecificQuestions": [
+    {
+      "question": "string",
+      "context": "string"
+    }
+  ],
+  "questionsToAskInterviewer": ["string"]
+}
+
+Rules:
+- behavioralQuestions: exactly 3 items
+- technicalQuestions: exactly 5 items
+- resumeSpecificQuestions: exactly 2 items
+- questionsToAskInterviewer: exactly 5 items
+- Each field must be meaningful and relevant to the resume
+- Return ONLY valid JSON
