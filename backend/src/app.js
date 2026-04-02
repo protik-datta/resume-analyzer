@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: [
       process.env.CLIENT_URL,
-      "https://resume-analyzer-nine-eosin.vercel.app",
+      "https://resume-analyzer-nine-eosin.vercel.app/",
       "http://localhost:5173",
       "http://localhost:5174",
     ],
