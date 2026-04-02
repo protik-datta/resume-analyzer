@@ -1,7 +1,23 @@
-import React from 'react'
-import Container from '../common/Container'
+import React from "react";
+import Container from "../common/Container";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "../../utils/toast";
+import { useNavigate } from "react-router-dom";
 
 const CTA = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAnalyzeClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Please login first!");
+      navigate("/");
+    } else {
+      navigate("/analyze");
+    }
+  };
+
   return (
     <Container>
       <section
@@ -37,12 +53,12 @@ const CTA = () => {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="#"
+            <button
+              onClick={handleAnalyzeClick}
               className="bg-green-500 text-white px-7 py-3 rounded-full text-sm font-semibold shadow-md hover:bg-green-600 transition"
             >
               Analyze my resume →
-            </a>
+            </button>
 
             <a
               href="#"
@@ -60,6 +76,6 @@ const CTA = () => {
       </section>
     </Container>
   );
-}
+};
 
-export default CTA
+export default CTA;

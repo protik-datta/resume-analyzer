@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserLogin } from "../api/api";
-import logo from "../assets/logo.svg";
 import { KeyRound, Mail } from "lucide-react";
 import Loader from "../utils/Loader";
 import { toast } from "../utils/toast";

@@ -41,3 +41,48 @@ export const useUserLogout = ()=> {
     },
   });
 }
+
+export const useAnalyzeResume = () => {
+  return useMutation({
+    mutationFn: async (formData) => {
+      return api.post("/resume/analyze", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    },
+  });
+};
+
+export const useGetHistory = () => {
+  return useQuery({
+    queryKey: ["history"],
+    queryFn: async () => {
+      return api.get("/resume/history");
+    },
+  });
+};
+
+export const useGetAnalysisDetails = (id) => {
+  return useQuery({
+    queryKey: ["analysis", id],
+    queryFn: async () => {
+      return api.get(`/resume/analysis/${id}`);
+    },
+    enabled: !!id,
+  });
+};
+
+export const useDeleteAnalysis = () => {
+  return useMutation({
+    mutationFn: async (id) => {
+      return api.delete(`/resume/analysis/${id}`);
+    },
+  });
+};
+
+export const useClearHistory = () => {
+  return useMutation({
+    mutationFn: async () => {
+      return api.delete("/resume/history");
+    },
+  });
+};

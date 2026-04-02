@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Analysis from './pages/Analysis';
 import Toaster from './utils/Toaster';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/analyze" element={<Analysis />} />
       </Routes>
     </BrowserRouter>
   );
