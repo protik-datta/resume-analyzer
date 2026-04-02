@@ -13,10 +13,10 @@ const router = express.Router();
 
 router.post(
   "/register",
-  validate(userRegisterSchema),
   upload.none(),
+  validate(userRegisterSchema),
   registerUser,
 );
-router.post("/login", validate(userLoginSchema), upload.none(), loginUser);
+router.post("/login", upload.none(), validate(userLoginSchema), loginUser);
 
 module.exports = router;

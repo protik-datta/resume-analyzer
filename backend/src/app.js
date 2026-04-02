@@ -49,4 +49,8 @@ app.use(cookieParser());
 const connectDB = require("./config/db");
 connectDB();
 
+// routes
+const authRoutes = require("./routes/auth.routes");
+app.use('/api/auth', authRoutes);
+
 module.exports = app
