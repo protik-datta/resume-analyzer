@@ -69,7 +69,7 @@ const getAnalysis = async (req, res) => {
       _id: analysisId,
       userId: userId,
     }).select(
-      "_id targetRole country criticalVerdict overallScore atsScore strengths weaknesses suggestions sections createdAt",
+      "_id targetRole experienceLevel ats_issues top_missing_keywords country criticalVerdict overallScore atsScore strengths weaknesses suggestions sections createdAt",
     );
 
     if (!analysis) {
@@ -101,9 +101,10 @@ const getHistory = async (req, res) => {
       .limit(20);
 
     if(analysis.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         success: false,
         message: "No analysis history found",
+        data: []
       });
     }
 
