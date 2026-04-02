@@ -1,4 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
+import PDFReport from "../components/details/PDFReport";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
@@ -82,8 +84,6 @@ const AnalysisDetails = () => {
 
   const analysis = data?.analysis;
 
-  console.log(analysis)
-
   if (isLoading) return <Loader fullScreen />;
 
   if (isError || !analysis) {
@@ -152,12 +152,25 @@ const AnalysisDetails = () => {
                   <RefreshCcw size={18} />
                   Analyze Again
                 </button>
-                <button
-                   className="hidden sm:flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl font-bold shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all"
+
+                <PDFDownloadLink
+                  document={<PDFReport analysis={analysis} />}
+                  fileName={`Resume-Analysis-${analysis.targetRole.replace(/\s+/g, "-")}.pdf`}
                 >
-                  <Download size={18} />
-                  Export PDF
-                </button>
+                  {({ loading }) => (
+                    <button
+                      disabled={loading}
+                      className="hidden sm:flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl font-bold shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all disabled:opacity-50"
+                    >
+                      {loading ? (
+                        <RefreshCcw size={18} className="animate-spin" />
+                      ) : (
+                        <Download size={18} />
+                      )}
+                      {loading ? "Generating..." : "Export PDF"}
+                    </button>
+                  )}
+                </PDFDownloadLink>
               </div>
             </div>
 
