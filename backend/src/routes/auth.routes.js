@@ -5,6 +5,7 @@ const {
   registerUser,
   loginUser,
   getMe,
+  logoutUser,
 } = require("../controllers/auth.controller");
 const validate = require("../middlewares/validate.middleware");
 const {
@@ -24,5 +25,6 @@ router.post(
 );
 router.post("/login", upload.none(), validate(userLoginSchema), loginUser);
 router.get("/me", authMiddleware, getMe);
+router.post("/logout", authMiddleware, logoutUser);
 
 module.exports = router;
