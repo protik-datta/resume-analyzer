@@ -16,7 +16,6 @@ const analysisLimit = async (req, res, next) => {
     }
 
     await user.save();
-
     next();
   } catch (err) {
     next(err);
