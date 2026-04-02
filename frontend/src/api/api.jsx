@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -32,5 +32,16 @@ export const userLogin = () => {
     onError: (error) => {
       console.log("Login error:", error);
     },
+  });
+};
+
+export const getMe = () => {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const res = await api.get("/auth/me");
+      return res.data;
+    },
+    retry: false,
   });
 };
