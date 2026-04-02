@@ -35,13 +35,31 @@ export const userLogin = () => {
   });
 };
 
-export const getMe = () => {
+export const getMe = ()=> {
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
-      const res = await api.get("/auth/me");
-      return res.data;
+      return api.get("/auth/me");
     },
-    retry: false,
+    onSuccess: (res) => {
+      console.log("Get Me success:", res.data);
+    },
+    onError: (error) => {
+      console.log("Get Me error:", error);
+    },
   });
-};
+}
+
+export const userLogout = ()=> {
+  return useMutation({
+    mutationFn: async () => {
+      return api.post("/auth/logout");
+    },
+    onSuccess: (res) => {
+      console.log("Logout success:", res.data);
+    },
+    onError: (error) => {
+      console.log("Logout error:", error);
+    },
+  });
+}
