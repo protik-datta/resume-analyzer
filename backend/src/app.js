@@ -20,14 +20,12 @@ app.use(
     },
   }),
 );
-app.use(morgan("dev"));
+const isProduction = process.env.NODE_ENV === "production";
+app.use(morgan(isProduction ? "combined" : "dev"));
+
 app.use(
   cors({
-    origin:
-      process.env.CLIENT_URL ||
-      "http://localhost:5173" ||
-      "http://localhost:5174",
-
+    origin: isProduction ? process.env.CLIENT_URL : ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   }),
 );
@@ -52,7 +50,16 @@ connectDB();
 // routes
 const authRoutes = require("./routes/auth.routes");
 const resumeRoutes = require("./routes/resume.routes");
-app.use('/api/auth', authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
-module.exports = app
+// centralized error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error",
+    error: isProduction ? {} : err,
+  });
+});
+
+module.exports = app;
