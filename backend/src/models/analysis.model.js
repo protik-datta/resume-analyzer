@@ -16,7 +16,8 @@ const analysisSchema = new mongoose.Schema(
 
     jobDescription: {
       type: String,
-      required: true,
+      default: "",
+      trim: true,
     },
 
     overallScore: {
@@ -31,6 +32,26 @@ const analysisSchema = new mongoose.Schema(
       default: 0,
       min: 0,
       max: 100,
+    },
+
+    country: { type: String, default: "Unknown" },
+
+    criticalVerdict: { type: String, default: "" },
+
+    ats_issues: {
+      type: [String],
+      default: [],
+    },
+
+    top_missing_keywords: {
+      type: [String],
+      default: [],
+    },
+
+    experienceLevel: {
+      type: String,
+      enum: ["entry", "mid", "senior", "executive"],
+      default: null,
     },
 
     strengths: {
@@ -50,16 +71,16 @@ const analysisSchema = new mongoose.Schema(
 
     sections: {
       experience: {
-        type: Number,
-        default: 0,
+        score: { type: Number, default: 0 },
+        feedback: { type: String, default: "" },
       },
       skills: {
-        type: Number,
-        default: 0,
+        score: { type: Number, default: 0 },
+        feedback: { type: String, default: "" },
       },
       education: {
-        type: Number,
-        default: 0,
+        score: { type: Number, default: 0 },
+        feedback: { type: String, default: "" },
       },
     },
 

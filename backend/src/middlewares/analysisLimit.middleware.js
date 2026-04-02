@@ -4,7 +4,10 @@ const analysisLimit = async (req, res, next) => {
   try {
     const user = req.user;
 
-    const limit = user.plan === "paid" ? PAID_PLAN_LIMIT : FREE_PLAN_LIMIT;
+    const limit =
+      user.plan === "paid"
+        ? process.env.PAID_PLAN_LIMIT
+        : process.env.FREE_PLAN_LIMIT;
 
     const result = handleDailyLimit(user, limit);
 
@@ -22,4 +25,4 @@ const analysisLimit = async (req, res, next) => {
   }
 };
 
-module.exports = analysisLimit;
+module.exports = { analysisLimit };

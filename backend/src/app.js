@@ -51,8 +51,8 @@ connectDB();
 
 // routes
 const authRoutes = require("./routes/auth.routes");
-const uploadRoutes = require("./routes/resume.routes");
+const resumeRoutes = require("./routes/resume.routes");
 app.use('/api/auth', authRoutes);
-app.use('/api/resume', uploadRoutes);
+app.use("/api/resume", resumeRoutes);
 
 module.exports = app

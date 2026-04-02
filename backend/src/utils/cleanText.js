@@ -1,11 +1,10 @@
+// src/utils/cleanText.js
 const cleanText = (text) => {
   return text
-    .replace(/\n+/g, " ")
-    .replace(/\s+/g, " ")
-    .replace(/```json/gi, "")
-    .replace(/```/g, "")
-    .replace(/\n+/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]+/g, " ")
     .trim();
 };
 

@@ -1,27 +1,18 @@
 const cleanJson = (text) => {
-  try {
-    if (!text) throw new Error("Empty response");
+  if (!text) return null;
 
-    let cleaned = text
-      .replace(/```json\s*/gi, "")
-      .replace(/```\s*/gi, "")
-      .trim();
+  let cleaned = text.trim();
 
-    const firstBrace = cleaned.indexOf("{");
-    const lastBrace = cleaned.lastIndexOf("}");
+  // markdown code block remove করো
+  cleaned = cleaned.replace(/^```json\s*/i, "");
+  cleaned = cleaned.replace(/^```\s*/i, "");
+  cleaned = cleaned.replace(/\s*```\s*$/i, "");
+  cleaned = cleaned.trim();
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
 
-    if (firstBrace === -1 || lastBrace === -1) {
-      throw new Error("No JSON object found");
-    }
-
-    cleaned = cleaned.slice(firstBrace, lastBrace + 1);
-
-    return JSON.parse(cleaned);
-  } catch (error) {
-    console.error("JSON Parse Error:", error.message);
-
-    return null;
-  }
+  if (firstBrace === -1 || lastBrace === -1) return null;
+  return cleaned.substring(firstBrace, lastBrace + 1);
 };
 
 module.exports = cleanJson;
