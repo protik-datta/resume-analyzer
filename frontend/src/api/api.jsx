@@ -1,46 +1,73 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
 });
 
+// ✅ Request interceptor — header-এ token দাও
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// ✅ Response interceptor — 401 হলে token clear করো
+api.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+    }
+    return Promise.reject(error);
+  },
+);
+
 export const useRegisterUser = () => {
   return useMutation({
     mutationFn: async (data) => {
-      return api.post("/auth/register", data);
+      const res = await api.post("/auth/register", data);
+      if (res.data?.token) localStorage.setItem("token", res.data.token); // ✅
+      return res;
     },
   });
 };
 
 export const useUserLogin = () => {
   return useMutation({
-    mutationFn: (data) => {
-      return api.post("/auth/login", data);
+    mutationFn: async (data) => {
+      const res = await api.post("/auth/login", data);
+      if (res.data?.token) localStorage.setItem("token", res.data.token); // ✅
+      return res;
     },
   });
 };
 
-export const useGetMe = ()=> {
+export const useGetMe = () => {
   return useQuery({
     queryKey: ["me"],
-    queryFn: async () => {
-      return api.get("/auth/me");
-    },
+    queryFn: async () => api.get("/auth/me"),
     retry: false,
     refetchOnWindowFocus: false,
   });
-}
+};
 
-export const useUserLogout = ()=> {
+export const useUserLogout = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      return api.post("/auth/logout");
+      const res = await api.post("/auth/logout");
+      localStorage.removeItem("token"); // ✅
+      queryClient.clear();
+      return res;
     },
   });
-}
+};
 
 export const useAnalyzeResume = () => {
   return useMutation({
@@ -57,7 +84,7 @@ export const useGetHistory = () => {
     queryKey: ["history"],
     queryFn: async () => {
       const res = await api.get("/resume/history");
-      return res.data
+      return res.data;
     },
   });
 };
@@ -75,16 +102,12 @@ export const useGetAnalysisDetails = (id) => {
 
 export const useDeleteAnalysis = () => {
   return useMutation({
-    mutationFn: async (id) => {
-      return api.delete(`/resume/analysis/${id}`);
-    },
+    mutationFn: async (id) => api.delete(`/resume/analysis/${id}`),
   });
 };
 
 export const useClearHistory = () => {
   return useMutation({
-    mutationFn: async () => {
-      return api.delete("/resume/history");
-    },
+    mutationFn: async () => api.delete("/resume/history"),
   });
 };

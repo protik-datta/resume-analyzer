@@ -14,7 +14,6 @@ const app = express();
 
 app.set("trust proxy", 1);
 
-// middlewares
 app.use(
   helmet({
     crossOriginResourcePolicy: {
@@ -22,40 +21,39 @@ app.use(
     },
   }),
 );
+
 const isProduction = process.env.NODE_ENV === "production";
 app.use(morgan(isProduction ? "combined" : "dev"));
 
 app.use(
   cors({
-    origin: true,
+    origin: "https://resume-analyzer-nine-eosin.vercel.app", // ✅ trailing slash সরানো হয়েছে
     credentials: true,
   }),
 );
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: "Too many requests from this IP, try again later.",
+  limit: 1000000000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "Too many requests from this IP, please try again later.",
 });
 
 app.use(limiter);
 
-// body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// db connection
 const connectDB = require("./config/db");
 connectDB();
 
-// routes
 const authRoutes = require("./routes/auth.routes");
 const resumeRoutes = require("./routes/resume.routes");
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
-// centralized error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
