@@ -52,10 +52,22 @@ const analyzeResume = async (req, res) => {
       analysis,
     });
   } catch (error) {
-    console.log(error);
+    console.error("AI Analysis Error:", error);
+
+    // Map common technical errors to user-friendly messages
+    let friendlyMessage = "Analysis failed, please try again later. ❌";
+
+    if (error.message?.includes("429") || error.message?.includes("Quota")) {
+      friendlyMessage =
+        "The AI service is currently busy due to high demand. Please try again in a few minutes. ⏳";
+    } else if (error.message?.includes("Safety")) {
+      friendlyMessage =
+        "Your resume could not be analyzed due to content safety filters. Please ensure it follows professional standards.";
+    }
+
     res.status(500).json({
       success: false,
-      message: error.message || "Server error. Please try again later.",
+      message: friendlyMessage,
     });
   }
 };

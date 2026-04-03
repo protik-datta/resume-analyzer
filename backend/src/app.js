@@ -58,9 +58,14 @@ app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Global Catch Error:", err.stack);
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.status(err.status || 500).json({
-    message: err.message || "Internal Server Error",
+    success: false,
+    message: isProduction
+      ? "Something went wrong. Please try again later."
+      : err.message,
     error: isProduction ? {} : err,
   });
 });

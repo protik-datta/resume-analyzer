@@ -37,7 +37,7 @@ export const useRegisterUser = () => {
       return res;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["key"] });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
 };
@@ -51,7 +51,7 @@ export const useUserLogin = () => {
       return res;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["key"] });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
 };

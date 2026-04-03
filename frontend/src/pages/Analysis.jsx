@@ -57,8 +57,16 @@ const Analysis = () => {
         }, 2000);
       },
       onError: (err) => {
+        const errorMsg = err?.response?.data?.message || "";
+        const isTechnical =
+          errorMsg.includes("[GoogleGenerativeAI Error]") ||
+          errorMsg.includes("429") ||
+          errorMsg.includes("Quota");
+
         toast.error(
-          err?.response?.data?.message || "Analysis failed, please try again ❌"
+          isTechnical || !errorMsg
+            ? "AI Analysis is temporarily unavailable. Please try again soon. ⏳"
+            : errorMsg
         );
       },
     });
