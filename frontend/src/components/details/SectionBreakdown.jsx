@@ -1,16 +1,28 @@
 import React from "react";
-import { Award, Code, GraduationCap } from "lucide-react";
+import { Award, Code, GraduationCap, FileCheck } from "lucide-react";
+import { motion } from "framer-motion";
 
-const Section = (props) => {
-  const { icon: Icon, title, score, feedback, color = "green" } = props;
+const Section = ({ icon: Icon, title, score, feedback, color = "green", delay }) => {
   const colors = {
     green: "bg-green-50 text-green-600 border-green-100",
     indigo: "bg-indigo-50 text-indigo-600 border-indigo-100",
     amber: "bg-amber-50 text-amber-600 border-amber-100",
   };
 
+  const progressColors = {
+    green: "bg-green-500",
+    indigo: "bg-indigo-500",
+    amber: "bg-amber-500",
+  };
+
   return (
-    <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col gap-5">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.5 }}
+      className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col gap-5 hover:shadow-md transition-shadow"
+    >
       <div className="flex items-center justify-between">
         <div className={`p-3 rounded-2xl ${colors[color]} border flex items-center justify-center`}>
           {Icon && <Icon size={22} />}
@@ -29,12 +41,15 @@ const Section = (props) => {
       </div>
 
       <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-1000 ${color === "green" ? "bg-green-500" : color === "indigo" ? "bg-indigo-500" : "bg-amber-500"}`}
-          style={{ width: `${score}%` }}
+        <motion.div
+          initial={{ width: 0 }}
+          whileInView={{ width: `${score}%` }}
+          transition={{ duration: 1, delay: delay + 0.3, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className={`h-full rounded-full ${progressColors[color]}`}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -46,23 +61,26 @@ const SectionBreakdown = ({ sections }) => {
       <Section
         icon={Award}
         title="Experience"
-        score={sections.experience.score}
-        feedback={sections.experience.feedback}
+        score={sections.experience?.score || 0}
+        feedback={sections.experience?.feedback || "No feedback available"}
         color="green"
+        delay={0.1}
       />
       <Section
         icon={Code}
         title="Skills"
-        score={sections.skills.score}
-        feedback={sections.skills.feedback}
+        score={sections.skills?.score || 0}
+        feedback={sections.skills?.feedback || "No feedback available"}
         color="indigo"
+        delay={0.2}
       />
       <Section
         icon={GraduationCap}
         title="Education"
-        score={sections.education.score}
-        feedback={sections.education.feedback}
+        score={sections.education?.score || 0}
+        feedback={sections.education?.feedback || "No feedback available"}
         color="amber"
+        delay={0.3}
       />
     </div>
   );

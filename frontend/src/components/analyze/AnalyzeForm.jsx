@@ -1,5 +1,6 @@
 import React from "react";
 import { Briefcase, Building, FileText } from "lucide-react";
+import { motion } from "framer-motion";
 
 const AnalyzeForm = ({ formData, setFormData, isPending, handleSubmit }) => {
   const handleChange = (e) => {
@@ -10,11 +11,32 @@ const AnalyzeForm = ({ formData, setFormData, isPending, handleSubmit }) => {
     }));
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.5,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="w-full max-w-2xl mx-auto space-y-6"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Target Role */}
-        <div className="relative">
+        <motion.div variants={itemVariants} className="relative">
           <label className="text-sm font-semibold text-gray-700 mb-2 block">
             Target Role
           </label>
@@ -32,10 +54,10 @@ const AnalyzeForm = ({ formData, setFormData, isPending, handleSubmit }) => {
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm transition-all shadow-sm"
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Target Industry */}
-        <div className="relative">
+        <motion.div variants={itemVariants} className="relative">
           <label className="text-sm font-semibold text-gray-700 mb-2 block">
             Target Industry
           </label>
@@ -53,11 +75,11 @@ const AnalyzeForm = ({ formData, setFormData, isPending, handleSubmit }) => {
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm transition-all shadow-sm"
             />
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Job Description */}
-      <div className="relative">
+      <motion.div variants={itemVariants} className="relative">
         <label className="text-sm font-semibold text-gray-700 mb-2 block">
           Job Description
         </label>
@@ -75,17 +97,20 @@ const AnalyzeForm = ({ formData, setFormData, isPending, handleSubmit }) => {
             className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm transition-all shadow-sm resize-none"
           ></textarea>
         </div>
-      </div>
+      </motion.div>
 
       {/* Submit Button */}
-      <button
+      <motion.button
+        variants={itemVariants}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={handleSubmit}
         disabled={isPending}
         className="w-full bg-[#22c55e] text-white py-4 rounded-2xl text-base font-bold shadow-lg shadow-green-200 hover:bg-green-600 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-60 disabled:pointer-events-none mt-10"
       >
         {isPending ? "Analyzing Your Resume..." : "Analyze Now ✦"}
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 };
 

@@ -29,21 +29,29 @@ api.interceptors.response.use(
 );
 
 export const useRegisterUser = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data) => {
       const res = await api.post("/auth/register", data);
       if (res.data?.token) localStorage.setItem("token", res.data.token); // ✅
       return res;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["key"] });
+    },
   });
 };
 
 export const useUserLogin = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data) => {
       const res = await api.post("/auth/login", data);
       if (res.data?.token) localStorage.setItem("token", res.data.token); // ✅
       return res;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["key"] });
     },
   });
 };

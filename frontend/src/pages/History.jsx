@@ -5,11 +5,16 @@ import Container from "../components/common/Container";
 import HistoryHero from "../components/history/HistoryHero";
 import HistoryCard from "../components/history/HistoryCard";
 import Loader from "../utils/Loader";
-import { useGetHistory, useDeleteAnalysis, useClearHistory } from "../api/api";
+import {
+  useGetHistory,
+  useDeleteAnalysis,
+  useClearHistory,
+} from "../api/api";
 import { toast } from "../utils/toast";
 import { History as HistoryIcon, Search, AlertCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const History = () => {
   const [search, setSearch] = useState("");
@@ -20,12 +25,12 @@ const History = () => {
   const { mutate: deleteAnalysis, isPending: isDeleting } = useDeleteAnalysis();
   const { mutate: clearHistory, isPending: isClearing } = useClearHistory();
 
-   const historyItems = Array.isArray(data?.data) ? data.data : [];
+  const historyItems = Array.isArray(data?.data) ? data.data : [];
 
   const filteredHistory = historyItems.filter(
     (item) =>
       item.targetRole.toLowerCase().includes(search.toLowerCase()) ||
-      item.country.toLowerCase().includes(search.toLowerCase()),
+      item.targetIndustry.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleDelete = (id) => {
@@ -41,7 +46,11 @@ const History = () => {
   };
 
   const handleClearAll = () => {
-    if (window.confirm("WARNING: This will permanently delete your entire history. Proceed?")) {
+    if (
+      window.confirm(
+        "WARNING: This will permanently delete your entire history. Proceed?"
+      )
+    ) {
       clearHistory(null, {
         onSuccess: () => {
           toast.success("History cleared ✦");
@@ -52,8 +61,24 @@ const History = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gray-50 flex flex-col"
+    >
       {(isClearing || isLoading) && <Loader fullScreen />}
       <Navbar />
 
@@ -67,9 +92,17 @@ const History = () => {
         <Container>
           {/* Search & Stats */}
           {historyItems.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8"
+            >
               <div className="relative w-full max-w-md">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Search
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
                 <input
                   type="text"
                   placeholder="Search by role or industry..."
@@ -81,7 +114,7 @@ const History = () => {
               <div className="text-xs font-bold text-gray-400 uppercase tracking-widest bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
                 Total scans: {historyItems.length}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* List Content */}
@@ -92,15 +125,26 @@ const History = () => {
               ))}
             </div>
           ) : isError ? (
-            <div className="text-center py-20 bg-white rounded-[40px] border border-red-50 shadow-sm px-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-20 bg-white rounded-[40px] border border-red-50 shadow-sm px-6"
+            >
               <AlertCircle size={48} className="mx-auto text-red-400 mb-4" />
-              <h3 className="text-xl font-bold text-black mb-2">Error loading history</h3>
+              <h3 className="text-xl font-bold text-black mb-2">
+                Error loading history
+              </h3>
               <p className="text-sm text-gray-500 max-w-sm mx-auto">
-                We encountered an issue while retrieving your data. Please check your connection or try again later.
+                We encountered an issue while retrieving your data. Please check
+                your connection or try again later.
               </p>
-            </div>
-          ) : (historyItems.length === 0 || data?.success === false) ? (
-            <div className="text-center py-20 bg-white rounded-[40px] border border-gray-100 shadow-sm px-6">
+            </motion.div>
+          ) : historyItems.length === 0 || data?.success === false ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-20 bg-white rounded-[40px] border border-gray-100 shadow-sm px-6"
+            >
               <div className="w-20 h-20 bg-green-50 text-green-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <HistoryIcon size={36} />
               </div>
@@ -108,7 +152,8 @@ const History = () => {
                 {data?.message || "No analysis history found"}
               </h3>
               <p className="text-sm sm:text-base text-gray-500 max-w-sm mx-auto mb-8">
-                You haven’t performed any resume analyses yet. Start now and take your first step toward your dream career!
+                You haven’t performed any resume analyses yet. Start now and
+                take your first step toward your dream career!
               </p>
               <a
                 href="/analyze"
@@ -116,32 +161,45 @@ const History = () => {
               >
                 Analyze Now ✦
               </a>
-            </div>
+            </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredHistory.map((item) => (
-                <HistoryCard
-                  key={item._id}
-                  analysis={item}
-                  onView={(id) => navigate(`/analysis/${id}`)}
-                  onDelete={handleDelete}
-                  isDeleting={isDeleting}
-                />
-              ))}
-            </div>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence>
+                {filteredHistory.map((item) => (
+                  <HistoryCard
+                    key={item._id}
+                    analysis={item}
+                    onView={(id) => navigate(`/analysis/${id}`)}
+                    onDelete={handleDelete}
+                    isDeleting={isDeleting}
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.div>
           )}
 
           {/* Search Result Empty State */}
           {historyItems.length > 0 && filteredHistory.length === 0 && (
-             <div className="text-center py-20">
-               <p className="text-gray-400 font-medium italic">No matches found for "{search}"</p>
-             </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20"
+            >
+              <p className="text-gray-400 font-medium italic">
+                No matches found for "{search}"
+              </p>
+            </motion.div>
           )}
         </Container>
       </main>
 
       <Footer />
-    </div>
+    </motion.div>
   );
 };
 

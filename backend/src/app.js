@@ -27,7 +27,10 @@ app.use(morgan(isProduction ? "combined" : "dev"));
 
 app.use(
   cors({
-    origin: "https://resume-analyzer-nine-eosin.vercel.app", // ✅ trailing slash সরানো হয়েছে
+    origin: [
+      "https://resume-analyzer-nine-eosin.vercel.app",
+      "http://localhost:5173",
+    ], // ✅ trailing slash সরানো হয়েছে
     credentials: true,
   }),
 );

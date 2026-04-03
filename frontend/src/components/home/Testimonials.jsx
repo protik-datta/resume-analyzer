@@ -1,9 +1,13 @@
 import React from "react";
 import Container from "../common/Container";
+import { motion } from "framer-motion";
 
 function TestimonialCard({ text, init, bg, name, role }) {
   return (
-    <div className="w-[300px] sm:w-[340px] md:w-[360px] shrink-0 bg-white rounded-2xl p-6 border border-black/5 shadow-sm text-left flex flex-col justify-between">
+    <motion.div
+      whileHover={{ y: -5, scale: 1.02 }}
+      className="w-[300px] sm:w-[340px] md:w-[360px] shrink-0 bg-white rounded-2xl p-6 border border-black/5 shadow-sm text-left flex flex-col justify-between"
+    >
       <div>
         <div className="text-green-500 text-sm mb-3">★★★★★</div>
 
@@ -14,7 +18,7 @@ function TestimonialCard({ text, init, bg, name, role }) {
 
       <div className="flex items-center gap-3 mt-auto">
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white"
+          className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-sm"
           style={{ background: bg }}
         >
           {init}
@@ -25,7 +29,7 @@ function TestimonialCard({ text, init, bg, name, role }) {
           <div className="text-xs text-gray-500">{role}</div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -82,19 +86,43 @@ function Testimonials() {
     >
       <Container>
         {/* Header */}
-        <div className="max-w-2xl mx-auto mb-14">
-          <span className="inline-block text-xs font-semibold text-green-600 bg-green-100 px-4 py-1 rounded-full mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="max-w-2xl mx-auto mb-14"
+        >
+          <motion.span
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="inline-block text-xs font-semibold text-green-600 bg-green-100 px-4 py-1 rounded-full mb-4"
+          >
             ✦ Testimonials
-          </span>
+          </motion.span>
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-black mb-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-black mb-4"
+          >
             Loved by job seekers
-          </h2>
+          </motion.h2>
 
-          <p className="text-sm sm:text-base text-gray-500">
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="text-sm sm:text-base text-gray-500"
+          >
             Real results from real people who landed their dream jobs.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </Container>
 
       {/* Slider */}

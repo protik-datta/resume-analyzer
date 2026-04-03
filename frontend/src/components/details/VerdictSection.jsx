@@ -1,43 +1,79 @@
 import React from "react";
-import { Quote, UserCheck, Globe } from "lucide-react";
+import { Award, Briefcase, Globe } from "lucide-react";
+import { motion } from "framer-motion";
 
 const VerdictSection = ({ criticalVerdict, experienceLevel, country }) => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="bg-indigo-900 text-white rounded-[40px] p-8 sm:p-12 shadow-xl relative overflow-hidden">
-      {/* Background patterns */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-800 rounded-full -translate-y-1/2 translate-x-1/2 opacity-30 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-700 rounded-full translate-y-1/2 -translate-x-1/4 opacity-20 blur-2xl pointer-events-none" />
-
-      <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center md:items-start">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-4 text-indigo-200">
-            <Quote size={24} className="opacity-60" fill="currentColor" />
-            <h3 className="text-xs font-bold uppercase tracking-widest">The Verdict</h3>
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={{
+        visible: { transition: { staggerChildren: 0.1 } },
+      }}
+      className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+    >
+      {/* Verdict Card */}
+      <motion.div
+        variants={itemVariants}
+        className="lg:col-span-2 bg-white border border-gray-100 rounded-[40px] p-8 sm:p-12 shadow-sm"
+      >
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-14 h-14 bg-black text-white rounded-2xl flex items-center justify-center shadow-lg">
+            <Award size={28} />
           </div>
-          <p className="text-xl sm:text-2xl font-semibold leading-relaxed italic">
-            "{criticalVerdict}"
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row md:flex-col gap-4 min-w-[200px]">
-          <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
-            <UserCheck size={20} className="text-indigo-200" />
-            <div>
-              <p className="text-[10px] uppercase font-bold text-indigo-300 tracking-wider">Level</p>
-              <p className="text-sm font-bold capitalize">{experienceLevel}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
-            <Globe size={20} className="text-indigo-200" />
-            <div>
-              <p className="text-[10px] uppercase font-bold text-indigo-300 tracking-wider">Country</p>
-              <p className="text-sm font-bold capitalize">{country}</p>
-            </div>
+          <div>
+            <h2 className="text-2xl font-black text-black tracking-tight">
+              Professional Verdict
+            </h2>
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">
+              Executive Summary
+            </p>
           </div>
         </div>
+        <p className="text-xl sm:text-2xl font-bold text-gray-800 leading-relaxed italic">
+          "{criticalVerdict}"
+        </p>
+      </motion.div>
+
+      {/* Metadata Cards */}
+      <div className="space-y-6">
+        <motion.div
+          variants={itemVariants}
+          className="bg-white border border-gray-100 rounded-[32px] p-8 shadow-sm flex items-center gap-6"
+        >
+          <div className="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
+            <Briefcase size={24} />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+              Level
+            </p>
+            <p className="text-lg font-black text-black">{experienceLevel}</p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          variants={itemVariants}
+          className="bg-white border border-gray-100 rounded-[32px] p-8 shadow-sm flex items-center gap-6"
+        >
+          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+            <Globe size={24} />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+              Country
+            </p>
+            <p className="text-lg font-black text-black">{country}</p>
+          </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

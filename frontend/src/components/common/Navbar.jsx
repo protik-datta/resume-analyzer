@@ -4,11 +4,12 @@ import userIcon from "../../assets/user_icon.svg";
 import { useAuth } from "../../context/AuthContext";
 import Button from "./Button";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X, LogOut, User, ChevronDown } from "lucide-react";
+import { Menu, X, LogOut, ChevronDown } from "lucide-react";
 import Container from "./Container";
 import { useUserLogout } from "../../api/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "../../utils/toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = ({ scrolled }) => {
   const { user, setUser } = useAuth();
@@ -23,7 +24,7 @@ const Navbar = ({ scrolled }) => {
 
   if (user) {
     navItems.push("History");
-    navItems.push("Analyze")
+    navItems.push("Analyze");
   }
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -39,7 +40,7 @@ const Navbar = ({ scrolled }) => {
       },
       onError: () => {
         toast.error("Logout failed");
-      }
+      },
     });
   };
 
@@ -67,7 +68,13 @@ const Navbar = ({ scrolled }) => {
           className="relative z-[110] flex items-center"
           onClick={() => setIsOpen(false)}
         >
-          <img src={logo} alt="logo" className="h-[28px] sm:h-8" />
+          <motion.img
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            src={logo}
+            alt="logo"
+            className="h-[28px] sm:h-8"
+          />
         </Link>
 
         {/* Desktop Nav Links */}
@@ -93,7 +100,7 @@ const Navbar = ({ scrolled }) => {
                     }
                   }}
                   className={({ isActive }) =>
-                    `text-[14px] font-medium transition-colors ${
+                    `text-[14px] font-medium transition-colors relative group ${
                       isActive && !isScrollItem
                         ? "text-black"
                         : "text-[#374151] hover:text-black"
@@ -101,6 +108,10 @@ const Navbar = ({ scrolled }) => {
                   }
                 >
                   {item}
+                  <motion.span
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"
+                    initial={false}
+                  />
                 </NavLink>
               </li>
             );
@@ -112,7 +123,9 @@ const Navbar = ({ scrolled }) => {
           <div className="hidden md:block">
             {user ? (
               <div className="relative" ref={dropdownRef}>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setShowDropdown(!showDropdown)}
                   className="flex items-center gap-2 text-sm font-medium text-[#374151] hover:text-black transition-colors focus:outline-none"
                 >
@@ -128,29 +141,37 @@ const Navbar = ({ scrolled }) => {
                       showDropdown ? "rotate-180" : ""
                     }`}
                   />
-                </button>
+                </motion.button>
 
                 {/* Dropdown Menu */}
-                {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-black/5 py-2 z-[120] animate-in fade-in zoom-in duration-200">
-                    <div className="px-4 py-3 border-b border-gray-100 mb-1">
-                      <p className="text-sm font-semibold text-black truncate">
-                        {user?.name || user?.username}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate mt-0.5">
-                        {user?.email}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                <AnimatePresence>
+                  {showDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-black/5 py-2 z-[120]"
                     >
-                      <LogOut size={16} />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
+                      <div className="px-4 py-3 border-b border-gray-100 mb-1">
+                        <p className="text-sm font-semibold text-black truncate">
+                          {user?.name || user?.username}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate mt-0.5">
+                          {user?.email}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut size={16} />
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <Link to="/login">
@@ -165,86 +186,110 @@ const Navbar = ({ scrolled }) => {
             onClick={toggleMenu}
             aria-label="Toggle mobile menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            <motion.div
+              initial={false}
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.div>
           </button>
         </div>
       </Container>
 
       {/* Mobile Menu Overlay */}
-      <div
-        className={`fixed top-0 right-0 w-full h-screen bg-white z-[105] flex flex-col pt-20 px-6 transition-transform duration-300 ease-in-out md:hidden ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col gap-6">
-          {navItems.map((item, index) => {
-            const isScrollItem = item === "Features" || item === "Testimonials";
-            const target =
-              item === "Home"
-                ? "/"
-                : isScrollItem
-                ? `/#${item.toLowerCase()}`
-                : `/${item.toLowerCase()}`;
-            return (
-              <NavLink
-                key={index}
-                to={target}
-                onClick={(e) => {
-                  if (isScrollItem && location.pathname === "/") {
-                    e.preventDefault();
-                    document
-                      .getElementById(item.toLowerCase())
-                      ?.scrollIntoView({ behavior: "smooth" });
-                  }
-                  setIsOpen(false);
-                }}
-                className={({ isActive }) =>
-                  `text-lg font-medium transition-colors ${
-                    isActive && !isScrollItem
-                      ? "text-black"
-                      : "text-[#374151] hover:text-black"
-                  }`
-                }
-              >
-                {item}
-              </NavLink>
-            );
-          })}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 w-full h-screen bg-white z-[105] flex flex-col pt-20 px-6 md:hidden"
+          >
+            <div className="flex flex-col gap-6">
+              {navItems.map((item, index) => {
+                const isScrollItem =
+                  item === "Features" || item === "Testimonials";
+                const target =
+                  item === "Home"
+                    ? "/"
+                    : isScrollItem
+                    ? `/#${item.toLowerCase()}`
+                    : `/${item.toLowerCase()}`;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <NavLink
+                      to={target}
+                      onClick={(e) => {
+                        if (isScrollItem && location.pathname === "/") {
+                          e.preventDefault();
+                          document
+                            .getElementById(item.toLowerCase())
+                            ?.scrollIntoView({ behavior: "smooth" });
+                        }
+                        setIsOpen(false);
+                      }}
+                      className={({ isActive }) =>
+                        `text-lg font-medium transition-colors ${
+                          isActive && !isScrollItem
+                            ? "text-black"
+                            : "text-[#374151] hover:text-black"
+                        }`
+                      }
+                    >
+                      {item}
+                    </NavLink>
+                  </motion.div>
+                );
+              })}
 
-          <div className="pt-6 border-t border-gray-100 mt-2">
-            {user ? (
-              <div className="flex flex-col gap-5">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={userIcon}
-                    alt="Profile"
-                    className="w-12 h-12 rounded-full border border-gray-200 object-cover bg-gray-100"
-                  />
-                  <div>
-                    <p className="text-base font-bold text-black">
-                      {user?.name || user?.username}
-                    </p>
-                    <p className="text-sm text-gray-500">{user?.email}</p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navItems.length * 0.1 }}
+                className="pt-6 border-t border-gray-100 mt-2"
+              >
+                {user ? (
+                  <div className="flex flex-col gap-5">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={userIcon}
+                        alt="Profile"
+                        className="w-12 h-12 rounded-full border border-gray-200 object-cover bg-gray-100"
+                      />
+                      <div>
+                        <p className="text-base font-bold text-black">
+                          {user?.name || user?.username}
+                        </p>
+                        <p className="text-sm text-gray-500">{user?.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 text-lg font-semibold text-red-600 w-full"
+                    >
+                      <LogOut size={20} />
+                      Sign Out
+                    </button>
                   </div>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 text-lg font-semibold text-red-600 w-full"
-                >
-                  <LogOut size={20} />
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button classname="text-[16px] font-medium w-full py-3">
-                  Login
-                </Button>
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
+                ) : (
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    <Button classname="text-[16px] font-medium w-full py-3">
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

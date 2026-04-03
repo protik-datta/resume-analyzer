@@ -8,6 +8,7 @@ import { useAnalyzeResume } from "../api/api";
 import { toast } from "../utils/toast";
 import Loader from "../utils/Loader";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Analysis = () => {
   const [file, setFile] = useState(null);
@@ -28,7 +29,11 @@ const Analysis = () => {
       return;
     }
 
-    if (!formData.targetRole || !formData.targetIndustry || !formData.jobDescription) {
+    if (
+      !formData.targetRole ||
+      !formData.targetIndustry ||
+      !formData.jobDescription
+    ) {
       toast.error("Please fill in all the required fields!");
       return;
     }
@@ -52,13 +57,21 @@ const Analysis = () => {
         }, 2000);
       },
       onError: (err) => {
-        toast.error(err?.response?.data?.message || "Analysis failed, please try again ❌");
+        toast.error(
+          err?.response?.data?.message || "Analysis failed, please try again ❌"
+        );
       },
     });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gray-50 flex flex-col"
+    >
       {isPending && <Loader fullScreen />}
       <Navbar />
 
@@ -66,7 +79,12 @@ const Analysis = () => {
         <AnalyzeHero />
 
         <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-[40px] p-8 sm:p-12 shadow-2xl shadow-gray-200 border border-gray-100">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="bg-white rounded-[40px] p-8 sm:p-12 shadow-2xl shadow-gray-200 border border-gray-100"
+          >
             <UploadZone file={file} setFile={setFile} />
             <AnalyzeForm
               formData={formData}
@@ -74,12 +92,12 @@ const Analysis = () => {
               isPending={isPending}
               handleSubmit={handleSubmit}
             />
-          </div>
+          </motion.div>
         </div>
       </main>
 
       <Footer />
-    </div>
+    </motion.div>
   );
 };
 
