@@ -12,7 +12,7 @@ dotenv.config();
 
 const app = express();
 
-app.use("trust proxy", 1);
+app.set("trust proxy", 1);
 
 // middlewares
 app.use(
