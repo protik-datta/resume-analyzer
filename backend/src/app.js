@@ -12,6 +12,8 @@ dotenv.config();
 
 const app = express();
 
+app.use("trust proxy", 1);
+
 // middlewares
 app.use(
   helmet({
@@ -25,7 +27,7 @@ app.use(morgan(isProduction ? "combined" : "dev"));
 
 app.use(
   cors({
-    origin: "https://resume-analyzer-nine-eosin.vercel.app",
+    origin: true,
     credentials: true,
   }),
 );
