@@ -2,8 +2,10 @@ import React from "react";
 import users from "../../assets/user_group.png";
 import Container from "../common/Container";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative text-center pt-20 pb-16 overflow-hidden">
       <Container>
@@ -70,6 +72,7 @@ const Banner = () => {
               whileTap={{ scale: 0.95 }}
               href="#"
               className="bg-[#22c55e] text-white px-6 py-3 rounded-full text-sm font-semibold shadow-md hover:bg-green-600 transition"
+              onClick={() => navigate("/analyze")}
             >
               Get started →
             </motion.a>
