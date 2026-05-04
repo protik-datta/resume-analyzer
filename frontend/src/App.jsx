@@ -18,11 +18,13 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <ProtectedRoute>
+
+        {/* ✅ Protected routes */}
+        <Route element={<ProtectedRoute />}>
           <Route path="/analyze" element={<Analysis />} />
           <Route path="/analysis/:id" element={<AnalysisDetails />} />
           <Route path="/history" element={<History />} />
-        </ProtectedRoute>
+        </Route>
       </Routes>
     </AnimatePresence>
   );
